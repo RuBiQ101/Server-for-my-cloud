@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "tsx server.ts",
     "build": "vite build",
+    "build:android": "npm run build && npx cap sync android && npx cap open android --build",
     "preview": "vite preview",
     "cap:sync": "npx cap sync",
     "cap:add:android": "npx cap add android",
