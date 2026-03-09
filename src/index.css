@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+body {
+  @apply bg-[#0A0A0B] text-white antialiased;
+}
+
+/* Custom Slider Styling */
+input[type='range']::-webkit-slider-thumb {
+  @apply appearance-none w-6 h-6 bg-white rounded-full border-4 border-blue-600 cursor-pointer shadow-lg transition-transform active:scale-125;
+}
+
+input[type='range']::-moz-range-thumb {
+  @apply w-6 h-6 bg-white rounded-full border-4 border-blue-600 cursor-pointer shadow-lg transition-transform active:scale-125;
+}

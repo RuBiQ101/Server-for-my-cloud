@@ -1,0 +1,59 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: items
+    // Document ID: auto-generated
+    // Fields:
+    //   - title: string (required, 1-100 chars)
+    //   - content: string (required, 0-10000 chars)
+    //   - type: string (required, enum: ['note', 'link', 'code', 'secret'])
+    //   - userId: string (required, matches auth.uid)
+    //   - createdAt: timestamp (required)
+    //   - updatedAt: timestamp (optional)
+    //   - tags: list (optional, max 10 items)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isDocOwner() {
+      return isAuthenticated() && request.auth.uid == resource.data.userId;
+    }
+
+    function isValidItem(data) {
+      return data.keys().hasAll(['title', 'content', 'type', 'userId', 'createdAt']) &&
+             data.title is string && data.title.size() > 0 && data.title.size() <= 100 &&
+             data.content is string && data.content.size() <= 10000 &&
+             data.type in ['note', 'link', 'code', 'secret'] &&
+             data.userId == request.auth.uid &&
+             data.createdAt is timestamp &&
+             (!('tags' in data) || (data.tags is list && data.tags.size() <= 10));
+    }
+
+    match /items/{itemId} {
+      allow read: if isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid);
+      allow create: if isAuthenticated() && isValidItem(request.resource.data);
+      allow update: if isDocOwner() && isValidItem(request.resource.data) && 
+                      request.resource.data.userId == resource.data.userId &&
+                      request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isDocOwner();
+    }
+
+    match /test/connection {
+      allow read: if true;
+    }
+  }
+}

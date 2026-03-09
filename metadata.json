@@ -1,0 +1,5 @@
+{
+  "name": "Cloud Vault",
+  "description": "A secure, multi-device cloud storage for your notes, links, and secrets, powered by Firebase.",
+  "requestFramePermissions": []
+}

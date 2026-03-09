@@ -1,0 +1,26 @@
+{
+  "entities": {
+    "VaultItem": {
+      "title": "Vault Item",
+      "description": "A piece of data stored in the cloud vault",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "type": { "type": "string", "enum": ["note", "link", "code", "secret"] },
+        "userId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "tags": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["title", "content", "type", "userId", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/items/{itemId}": {
+      "schema": "VaultItem",
+      "description": "Collection of items stored in the vault"
+    }
+  }
+}
